@@ -1,12 +1,11 @@
 {
-  "name": "@tatuputto/formik-dropzone",
+  "name": "formik-dropzone",
   "version": "1.0.0",
   "description": "Formik compatible dropzone component build on top of react-dropzone",
   "main": "./lib/index.js",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack --config webpack.config.prod.js --display-modules",
-    "prepublish": "npm run build && npm publish",
     "test": "jest"
   },
   "repository": {
