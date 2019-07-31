@@ -1,0 +1,71 @@
+{
+  "name": "@tatuputto/formik-dropzone",
+  "version": "1.0.0",
+  "description": "Formik compatible dropzone component build on top of react-dropzone",
+  "main": "./lib/index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack --config webpack.config.prod.js --display-modules",
+    "prepublish": "npm run build && npm publish",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TatuPutto/formik-dropzone.git"
+  },
+  "keywords": [
+    "react",
+    "formik",
+    "dropzone",
+    "react-dropzone"
+  ],
+  "author": "Tatu Putto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TatuPutto/redux-form-dropzone/issues"
+  },
+  "homepage": "https://github.com/TatuPutto/redux-form-dropzone#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-react-constant-elements": "^6.23.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.21",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "css-loader": "^1.0.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.7.1",
+    "eslint": "^4.19.1",
+    "eslint-plugin-babel": "^5.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-react": "^7.9.1",
+    "file-loader": "^2.0.0",
+    "formik": "^1.4.4",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^23.6.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-dropzone": "^6.2.4",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.22.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9"
+  },
+  "peer-dependencies": {
+    "react": "^16.3.0",
+    "react-dropzone": "^6.2.4"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>src/js/tests/jest-setup.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "react-transition-group": "^2.5.2"
+  }
+}
