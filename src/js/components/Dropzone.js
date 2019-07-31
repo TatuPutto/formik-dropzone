@@ -1,6 +1,5 @@
 import React, { Component, Fragment, isValidElement } from 'react'
 import { bool, func, number, object, oneOfType, string } from 'prop-types'
-import { getIn } from 'formik'
 import ReactDropzone from 'react-dropzone'
 import Errors from './Errors'
 import FailedToLoad from './FailedToLoad'
@@ -123,7 +122,7 @@ class Dropzone extends Component {
   }
 
   getErrors = () => {
-    return getIn(this.props.form.errors, this.props.field.name)
+    return this.props.form.errors[this.props.field.name]
   }
 
   hasErrors = () => {
@@ -131,7 +130,7 @@ class Dropzone extends Component {
   }
 
   getFieldValue = () => {
-    return getIn(this.props.form.values, this.props.field.name)
+    return this.props.form.values[this.props.field.name]
   }
 
   getCurrentFiles = () => {

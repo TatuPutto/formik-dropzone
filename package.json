@@ -64,8 +64,5 @@
   },
   "directories": {
     "lib": "lib"
-  },
-  "dependencies": {
-    "react-transition-group": "^2.5.2"
   }
 }
