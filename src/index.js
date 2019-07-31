@@ -1,2 +1,2 @@
-import { default as RFDropzone } from './js/components/RFDropzone'
-export default RFDropzone
+import { default as Dropzone } from './js/components/Dropzone'
+export default Dropzone

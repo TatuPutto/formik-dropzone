@@ -1,7 +1,6 @@
 import l10n from './l10n'
 
 const validate = (newFiles, oldFiles, props) => {
-  console.log('@validate', oldFiles);
   const { acceptedFileFormats, maxFileSize } = props
   const invalidFiles = []
   const validFiles = newFiles.filter(file => {
