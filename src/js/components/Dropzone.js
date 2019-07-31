@@ -1,6 +1,7 @@
 import React, { Component, Fragment, isValidElement } from 'react'
 import { bool, func, number, object, oneOfType, string } from 'prop-types'
-import Dropzone from 'react-dropzone'
+import { getIn } from 'formik'
+import ReactDropzone from 'react-dropzone'
 import Errors from './Errors'
 import FailedToLoad from './FailedToLoad'
 import Files from './Files'
@@ -25,7 +26,7 @@ import {
   updateActiveFile
 } from '../util/state-changes'
 
-class RFDropzone extends Component {
+class Dropzone extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -121,11 +122,25 @@ class RFDropzone extends Component {
     }
   }
 
+  getErrors = () => {
+    return getIn(this.props.form.errors, this.props.field.name)
+  }
+
+  hasErrors = () => {
+    return Boolean(this.getErrors())
+  }
+
+  getFieldValue = () => {
+    return getIn(this.props.form.values, this.props.field.name)
+  }
+
   getCurrentFiles = () => {
+    const fieldValue = this.getFieldValue()
+
     if (this.props.targetProp) {
-      return this.props.input.value[this.props.targetProp] || []
+      return fieldValue[this.props.targetProp] || []
     } else {
-      return this.props.input.value || []
+      return fieldValue || []
     }
   }
 
@@ -161,13 +176,13 @@ class RFDropzone extends Component {
   }
 
   prepareFilesForUpload = (acceptedFiles, rejectedFiles) => {
-    const files = [].concat(acceptedFiles, rejectedFiles)
-    const validFiles = this.validateFiles(files, this.props)
+    const newFiles = [].concat(acceptedFiles, rejectedFiles)
+    const validFiles = this.validateFiles(newFiles)
 
     if (validFiles.length) {
       this.prepareFiles(validFiles)
         .then(preparedFiles => {
-          this.addFilesToFormValues(preparedFiles, true)
+          this.addFilesToFormValues(preparedFiles, /*true*/ false)
         })
     }
   }
@@ -184,7 +199,8 @@ class RFDropzone extends Component {
   }
 
   validateFiles = (files) => {
-    const { validFiles, invalidFiles } = validate(files, this.props)
+    const oldFiles = this.getCurrentFiles()
+    const { validFiles, invalidFiles } = validate(files, oldFiles, this.props)
 
     this.setState(resetErroredFiles)
     this.setState(addErrors(invalidFiles))
@@ -342,8 +358,7 @@ class RFDropzone extends Component {
 
   addFilesToFormValues = (files, replaceExisting = false) => {
     files = Array.isArray(files) ? files : [files]
-    const field = this.props.input
-    const target = field.value || []
+    const target = this.getCurrentFiles()
     const targetProp = this.props.targetProp
     let targetCopy = JSON.parse(JSON.stringify(target))
 
@@ -363,7 +378,7 @@ class RFDropzone extends Component {
       }
     }
 
-    return field.onChange(targetCopy)
+    return this.props.form.setFieldValue(this.props.field.name, targetCopy)
   }
 
   removeFile = (fileToRemove) => {
@@ -405,10 +420,10 @@ class RFDropzone extends Component {
   }
 
   removeFileFromFormValues = (fileToRemove) => {
-    const field = this.props.input
+    const target = this.getCurrentFiles()
     const targetProp = this.props.targetProp
     const attachedStatusProp = this.props.attachedStatusProp
-    let targetCopy = JSON.parse(JSON.stringify(field.value))
+    let targetCopy = JSON.parse(JSON.stringify(target))
 
     if (targetProp) {
       targetCopy[targetProp] = targetCopy[targetProp].filter(file => file.name !== fileToRemove.name)
@@ -420,21 +435,20 @@ class RFDropzone extends Component {
       targetCopy[attachedStatusProp] = false
     }
 
-    return field.onChange(targetCopy)
+    return this.props.form.setFieldValue(this.props.field.name, targetCopy)
   }
 
   updateFileInFormValues = (fileToUpdate, key, value) => {
-    const field = this.props.input
-    const target = field.value
+    const target = this.getCurrentFiles()
     const targetProp = this.props.targetProp
 
     if (targetProp) {
-      field.onChange({
+      this.props.form.setFieldValue(this.props.field.name, {
         ...target,
         [targetProp]: updateTarget(target[targetProp])
       })
     } else {
-      field.onChange(updateTarget(target))
+      this.props.form.setFieldValue(this.props.field.name, updateTarget(target))
     }
 
     function updateTarget(filesArray) {
@@ -449,12 +463,12 @@ class RFDropzone extends Component {
   }
 
   renderLabel = () => {
-    const { includeErrorIcon, label, meta: { error, warning } } = this.props
+    const { includeErrorIcon, label } = this.props
 
     if (label && typeof label === 'string') {
       return (
         <label className="upper-label">
-          {(includeErrorIcon && (error || warning)) &&
+          {(includeErrorIcon && this.hasErrors()) &&
             <span className="fas fa-asterisk text-warning" />
           }
           {label}
@@ -479,8 +493,8 @@ class RFDropzone extends Component {
     } = this.state
 
     const {
-      input,
-      targetProp,
+      // input,
+      // targetProp,
       disabled,
       getFilesOnMount,
       delayInitialLoad,
@@ -489,7 +503,8 @@ class RFDropzone extends Component {
       uploadOnDrop
     } = this.props
 
-    const files = targetProp ? input.value[targetProp] || [] : input.value
+    // const files = targetProp ? input.value[targetProp] || [] : input.value
+    const files = this.getCurrentFiles()
     const showFileSelection = !fetching && fetchedSuccessfully ||
                               !fetching && getFilesOnMount && delayInitialLoad &&
                               this.failedFetchAttempts === 0 || !getFilesOnMount
@@ -544,10 +559,8 @@ class RFDropzone extends Component {
     }
   }
 
-
   render() {
     const {
-      meta: { error, warning },
       acceptedFileFormats,
       className,
       alwaysEnabled,
@@ -556,13 +569,13 @@ class RFDropzone extends Component {
 
     const { disabled: disabledViaState } = this.state
 
-    const shouldDisable = disabledViaState || !alwaysEnabled && (disabledViaProp || !!error || !!warning)
+    const shouldDisable = disabledViaState || !alwaysEnabled && (disabledViaProp || this.hasErrors())
     const dropzoneClassName = className + (shouldDisable ? ' dropzone-disabled' : '')
 
     return (
       <div>
-        {this.renderLabel()}
-        <Dropzone
+        {/*}{this.renderLabel()}*/}
+        <ReactDropzone
           className={dropzoneClassName}
           accept={acceptedFileFormats}
           disabled={shouldDisable}
@@ -573,7 +586,7 @@ class RFDropzone extends Component {
           ref={this.dropzoneRef}
         >
           {this.renderDropzoneContent()}
-        </Dropzone>
+        </ReactDropzone>
         {this.renderFileRestrictions()}
         {this.state.erroredFiles.length > 0 &&
           <Errors erroredFiles={this.state.erroredFiles} />
@@ -583,7 +596,7 @@ class RFDropzone extends Component {
   }
 }
 
-RFDropzone.defaultProps = {
+Dropzone.defaultProps = {
   acceptedFileFormats: 'image/jpeg, image/png, application/pdf',
   alwaysEnabled: false,
   allowMultiple: true,
@@ -597,12 +610,12 @@ RFDropzone.defaultProps = {
   maxFileSize: undefined,
   retryTimes: 5,
   showPreview: true,
-  uploadOnDrop: true,
+  uploadOnDrop: false,
 }
 
-RFDropzone.propTypes = {
-  input: object.isRequired,
-  meta: object.isRequired,
+Dropzone.propTypes = {
+  form: object.isRequired,
+  field: object.isRequired,
   uploadUrl: string,
   acceptedFileFormats: string,
   alwaysEnabled: bool,
@@ -629,4 +642,4 @@ RFDropzone.propTypes = {
   // style: object,
 }
 
-export default RFDropzone
+export default Dropzone

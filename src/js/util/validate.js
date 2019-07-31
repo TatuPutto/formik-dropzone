@@ -1,11 +1,12 @@
 import l10n from './l10n'
 
-const validate = (files, props) => {
-  const { acceptedFileFormats, targetProp, input, maxFileSize } = props
+const validate = (newFiles, oldFiles, props) => {
+  console.log('@validate', oldFiles);
+  const { acceptedFileFormats, maxFileSize } = props
   const invalidFiles = []
-  const validFiles = files.filter(file => {
+  const validFiles = newFiles.filter(file => {
 
-    if (filenameAlreadyInUse(file, input, targetProp)) {
+    if (filenameAlreadyInUse(file, oldFiles)) {
       invalidFiles.push({
         name: file.name,
         status: 'DECLINED',
@@ -53,9 +54,8 @@ const fileExceedsMaximunSizeLimit = (file, maxFileSize) => {
   return maxFileSize && file.size > maxFileSize
 }
 
-const filenameAlreadyInUse = (file, input, targetProp) => {
-  const preExistingFiles = targetProp ? input.value[targetProp] : input.value
-  return preExistingFiles && preExistingFiles.some(existingFile => existingFile.name === file.name)
+const filenameAlreadyInUse = (newFile, oldFiles) => {
+  return oldFiles && oldFiles.some(oldFile => oldFile.name === newFile.name)
 }
 
 export default validate
