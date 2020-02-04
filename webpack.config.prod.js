@@ -21,6 +21,7 @@ module.exports = {
   },
   externals: {
     'react': 'react',
-    'react-dropzone': 'react-dropzone'
+    'formik': 'formik'
+    // 'react-dropzone': 'react-dropzone'
   }
 }

@@ -1,11 +1,23 @@
 import React, { PureComponent } from 'react'
-import { bool, func, object } from 'prop-types'
+import { bool, func, object, oneOfType } from 'prop-types'
 import l10n from '../util/l10n'
 
 class File extends PureComponent {
   renderPreview = () => {
-    const { file, showPreview } = this.props
+    const { file, components, showPreview } = this.props
     let preview = null
+
+    if (components && components.hasOwnProperty('Preview')) {
+      if (typeof components.Preview === 'function') {
+        return components.Preview(file)
+      }
+
+      return (
+        <components.Preview
+          file={file}
+        />
+      )
+    }
 
     if (!showPreview || !file.type) {
       return preview
@@ -57,11 +69,31 @@ class File extends PureComponent {
   }
 
   renderFileContent = () => {
-    const { file, disabled } = this.props
+    const { file, disabled, downloadOnClick } = this.props
+
+    if (downloadOnClick && typeof downloadOnClick === 'function') {
+      return (
+        <span className="dropzone-file-content truncated">
+          <a
+            href="#"
+            onClick={handleDownload}
+          >
+            {file.name}
+            {!disabled && (file.location || file.preview) &&
+              <span className="fas fa-download ml-2" />
+            }
+          </a>
+          {this.renderUploadStatus()}
+        </span>
+      )
+    }
 
     return (
       <span className="dropzone-file-content truncated">
-        <a href={!disabled && (file.location || file.preview)} target="_blank">
+        <a
+          href={!disabled && (file.location || file.preview)}
+          download={file.location || file.preview}
+        >
           {file.name}
           {!disabled && (file.location || file.preview) &&
             <span className="fas fa-external-link-alt ml-2" />
@@ -70,6 +102,14 @@ class File extends PureComponent {
         {this.renderUploadStatus()}
       </span>
     )
+
+    function handleDownload(e) {
+      e.preventDefault()
+
+      if (typeof downloadOnClick === 'function') {
+        downloadOnClick(file.location || file.id)
+      }
+    }
   }
 
   renderUploadStatus = () => {
@@ -168,6 +208,7 @@ class File extends PureComponent {
     return (
       <li key={file.name} className="dropzone-file">
         {this.renderFileTypeIcon()}
+        {this.renderPreview()}
         {this.renderFileContent()}
         {this.renderActionButton()}
       </li>
@@ -177,10 +218,12 @@ class File extends PureComponent {
 
 File.propTypes = {
   file: object.isRequired,
+  components: object,
   includeFileTypeIcons: bool.isRequired,
   showPreview: bool.isRequired,
   uploadOnDrop: bool.isRequired,
   disabled: bool,
+  downloadOnClick: oneOfType([bool, func]).isRequired,
   removeFile: func,
 }
 

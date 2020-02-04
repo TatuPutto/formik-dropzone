@@ -1,10 +1,10 @@
 {
   "name": "formik-dropzone",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Formik compatible dropzone component build on top of react-dropzone",
   "main": "./lib/index.js",
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack-dev-server --port 3033",
     "build": "webpack --config webpack.config.prod.js --display-modules",
     "test": "jest"
   },
@@ -24,6 +24,9 @@
     "url": "https://github.com/TatuPutto/redux-form-dropzone/issues"
   },
   "homepage": "https://github.com/TatuPutto/redux-form-dropzone#readme",
+  "dependencies": {
+    "react-dropzone": "^6.2.4"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
@@ -55,8 +58,7 @@
     "webpack-dev-server": "^3.1.9"
   },
   "peer-dependencies": {
-    "react": "^16.3.0",
-    "react-dropzone": "^6.2.4"
+    "react": "^16.3.0"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>src/js/tests/jest-setup.js"

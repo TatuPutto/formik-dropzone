@@ -1,6 +1,7 @@
 import React, { Component, Fragment, isValidElement } from 'react'
 import { bool, func, number, object, oneOfType, string } from 'prop-types'
 import ReactDropzone from 'react-dropzone'
+import { getIn } from 'formik'
 import Errors from './Errors'
 import FailedToLoad from './FailedToLoad'
 import Files from './Files'
@@ -122,7 +123,7 @@ class Dropzone extends Component {
   }
 
   getErrors = () => {
-    return this.props.form.errors[this.props.field.name]
+    return getIn(this.props.form.errors, this.props.field.name)
   }
 
   hasErrors = () => {
@@ -130,7 +131,7 @@ class Dropzone extends Component {
   }
 
   getFieldValue = () => {
-    return this.props.form.values[this.props.field.name]
+    return getIn(this.props.form.values, this.props.field.name)
   }
 
   getCurrentFiles = () => {
@@ -255,6 +256,15 @@ class Dropzone extends Component {
     const file = this.state.activeFile
 
     this.setState(updateActiveFile('status', 'UPLOADING'))
+
+    if (this.props.upload) {
+      return this.props.upload(file)
+        // .catch
+        // reject({ ...file, status: 'DECLINED' }) -> throw something
+
+      // return Promise.resolve(`${_this.props.uploadUrl}/${file.name}`)
+      //   .then(location => resolve({ ...file, status: 'UPLOADED', location }))
+    }
 
     return new Promise((resolve, reject) => {
       const _this = this
@@ -388,6 +398,10 @@ class Dropzone extends Component {
       return this.removeFileFromFormValues(fileToRemove)
     }
 
+    if (this.props.onlyRemoveFromFormValues) {
+      return this.removeFileFromFormValues(fileToRemove)
+    }
+
     const _this = this
     const request = new XMLHttpRequest()
 
@@ -494,7 +508,9 @@ class Dropzone extends Component {
     const {
       // input,
       // targetProp,
+      components,
       disabled,
+      downloadOnClick,
       getFilesOnMount,
       delayInitialLoad,
       includeFileTypeIcon,
@@ -524,10 +540,12 @@ class Dropzone extends Component {
           <Files
             files={files}
             disabled={disabled}
+            downloadOnClick={downloadOnClick}
             showPreview={showPreview}
             includeFileTypeIcon={includeFileTypeIcon}
             uploadOnDrop={uploadOnDrop}
             removeFile={this.removeFile}
+            components={components}
           />
         }
         {uploading && activeFile &&
@@ -602,11 +620,13 @@ Dropzone.defaultProps = {
   className: 'dropzone',
   delayInitialLoad: undefined,
   disabled: false,
+  downloadOnClick: false,
   includeCredentials: true,
   includeErrorIcon: false,
   includeFileTypeIcon: false,
   includeFileRestrictionsLegend: false,
   maxFileSize: undefined,
+  onlyRemoveFromFormValues: false,
   retryTimes: 5,
   showPreview: true,
   uploadOnDrop: false,
@@ -617,6 +637,7 @@ Dropzone.propTypes = {
   field: object.isRequired,
   uploadUrl: string,
   acceptedFileFormats: string,
+  components: object,
   alwaysEnabled: bool,
   allowMultiple: bool,
   attachedStatusProp: string,
@@ -624,6 +645,7 @@ Dropzone.propTypes = {
   createFolderIfAbsent: bool,
   delayInitialLoad: number,
   disabled: bool,
+  downloadOnClick: oneOfType([bool, func]),
   getFilesOnMount: func,
   includeCredentials: bool,
   includeErrorIcon: bool,
@@ -632,6 +654,7 @@ Dropzone.propTypes = {
   label: oneOfType([func, string]),
   maxFileSize: number,
   onFileReadSuccess: func,
+  onlyRemoveFromFormValues: bool,
   retryTimeout: number,
   retryTimes: number,
   serverSideThreshold: number,

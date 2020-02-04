@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { array, bool, func } from 'prop-types'
+import { array, bool, func, object, oneOfType } from 'prop-types'
 import File from './File'
 
 class Files extends PureComponent {
@@ -12,9 +12,11 @@ class Files extends PureComponent {
               key={file.name}
               file={file}
               disabled={this.props.disabled}
+              downloadOnClick={this.props.downloadOnClick}
               showPreview={this.props.showPreview}
               removeFile={this.props.removeFile}
               uploadOnDrop={this.props.uploadOnDrop}
+              components={this.props.components}
             />
           ))}
         </ul>
@@ -24,7 +26,9 @@ class Files extends PureComponent {
 }
 
 Files.propTypes = {
+  components: object,
   disabled: bool.isRequired,
+  downloadOnClick: oneOfType([bool, func]).isRequired,
   files: array.isRequired,
   removeFile: func.isRequired,
   showPreview: bool.isRequired,
