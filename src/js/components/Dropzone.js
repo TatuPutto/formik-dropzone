@@ -581,7 +581,6 @@ class Dropzone extends Component {
 
   render() {
     const {
-      acceptedFileFormats,
       className,
       alwaysEnabled,
       disabled: disabledViaProp

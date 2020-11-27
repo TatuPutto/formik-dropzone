@@ -74,10 +74,7 @@ class File extends PureComponent {
     if (downloadOnClick && typeof downloadOnClick === 'function') {
       return (
         <span className="dropzone-file-content truncated">
-          <a
-            href="#"
-            onClick={handleDownload}
-          >
+          <a onClick={handleDownload}>
             {file.name}
             {!disabled && (file.location || file.preview) &&
               <span className="fas fa-download ml-2" />
@@ -157,22 +154,42 @@ class File extends PureComponent {
     }
   }
 
+  renderDeleteButton = () => {
+    const { file, disabled, removeFile, components } = this.props
+
+    if (components && components.hasOwnProperty('DeleteButton')) {
+      if (typeof components.DeleteButton === 'function') {
+        return components.DeleteButton(file, disabled, removeFile)
+      }
+
+      return (
+        <components.DeleteButton
+          file={file}
+          disabled={disabled}
+          onClick={removeFile}
+        />
+      )
+    }
+
+    return (
+      <div style={{marginLeft: "0.5rem"}}>
+        <button
+          type="button"
+          className="dropzone-file-action-btn dropzone-remove-file-btn"
+          disabled={disabled}
+          onClick={() => removeFile(file)}
+        >
+          <span className="far fa-trash-alt" />
+        </button>
+      </div>
+    )
+  }
+
   renderActionButton = () => {
     const { file, disabled } = this.props
 
     if (!file.status || file.status === 'UPLOADED' || file.status === 'UPLOAD_POSTPONED') {
-      return (
-        <div style={{marginLeft: "0.5rem"}}>
-          <button
-            type="button"
-            className="dropzone-file-action-btn dropzone-remove-file-btn"
-            disabled={disabled}
-            onClick={() => this.props.removeFile(file)}
-          >
-            <span className="far fa-trash-alt" />
-          </button>
-        </div>
-      )
+      return this.renderDeleteButton()
     } else if (file.status && file.status === 'UPLOADING') {
       /*return (
         <button
