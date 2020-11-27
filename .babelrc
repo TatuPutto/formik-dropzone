@@ -1,11 +1,7 @@
 {
-  "presets": ["env", "react", "stage-2"],
-  "env": {
-    "production": {
-      "plugins": [
-        "transform-react-constant-elements",
-        "transform-react-remove-prop-types"
-      ]
-    }
-  }
+  "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "plugins": [
+    "@babel/plugin-transform-react-constant-elements",
+    "@babel/plugin-proposal-class-properties"
+  ]
 }

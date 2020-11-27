@@ -1,6 +1,6 @@
 {
   "name": "formik-dropzone",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Formik compatible dropzone component build on top of react-dropzone",
   "main": "./lib/index.js",
   "scripts": {
@@ -25,17 +25,19 @@
   },
   "homepage": "https://github.com/TatuPutto/redux-form-dropzone#readme",
   "dependencies": {
+    "babel-cli": "^6.26.0",
     "react-dropzone": "^6.2.4"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-react-constant-elements": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "@babel/preset-stage-2": "^7.8.3",
     "babel-eslint": "^8.2.6",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-transform-react-constant-elements": "^6.23.0",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.21",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
+    "babel-loader": "^8.1.0",
     "css-loader": "^1.0.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",

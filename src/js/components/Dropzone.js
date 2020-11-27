@@ -8,6 +8,7 @@ import Files from './Files'
 import FileSelection from './FileSelection'
 import LoadingFiles from './LoadingFiles'
 import QueuedFiles from './QueuedFiles'
+import createAcceptedFileFormats from '../util/create-accepted-file-formats'
 import createFilename from '../util/create-filename'
 import l10n from '../util/l10n'
 import validate from '../util/validate'
@@ -40,6 +41,8 @@ class Dropzone extends Component {
     this.dropzoneRef = React.createRef()
     this.failedFetchAttempts = 0
     this.retryTimeoutHandle
+    this.acceptedFileFormats =
+      createAcceptedFileFormats(props.acceptedFileFormats)
     // this.progressBarAutocompleteInterval
   }
 
@@ -594,7 +597,7 @@ class Dropzone extends Component {
         {/*}{this.renderLabel()}*/}
         <ReactDropzone
           className={dropzoneClassName}
-          accept={acceptedFileFormats}
+          accept={this.acceptedFileFormats}
           disabled={shouldDisable}
           disableClick={true}
           multiple={this.props.allowMultiple}
