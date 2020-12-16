@@ -41,7 +41,7 @@ class Dropzone extends Component {
     this.dropzoneRef = React.createRef()
     this.failedFetchAttempts = 0
     this.retryTimeoutHandle
-    this.acceptedFileFormats =
+    this.acceptedFileFormats = 
       createAcceptedFileFormats(props.acceptedFileFormats)
     // this.progressBarAutocompleteInterval
   }
@@ -203,7 +203,8 @@ class Dropzone extends Component {
 
   validateFiles = (files) => {
     const oldFiles = this.getCurrentFiles()
-    const { validFiles, invalidFiles } = validate(files, oldFiles, this.props)
+    const { validFiles, invalidFiles } = validate(
+      files, oldFiles, this.acceptedFileFormats, this.props.maxFileSize)
 
     this.setState(resetErroredFiles)
     this.setState(addErrors(invalidFiles))
@@ -596,9 +597,9 @@ class Dropzone extends Component {
         {/*}{this.renderLabel()}*/}
         <ReactDropzone
           className={dropzoneClassName}
-          accept={this.acceptedFileFormats}
           disabled={shouldDisable}
           disableClick={true}
+          accept={this.acceptedFileFormats}
           multiple={this.props.allowMultiple}
           onDrop={this.handleDrop}
           style={{ opacity: shouldDisable ? '0.4' : '1' }}

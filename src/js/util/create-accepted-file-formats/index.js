@@ -17,6 +17,10 @@ const concat = (str1, str2) => {
 }
 
 const createAcceptedFileFormats = (acceptedFormatsStr) => {
+  if (!acceptedFormatsStr) {
+    return ''
+  }
+
   return acceptedFormatsStr
     .split(',')
     .reduce((completeFormatStr, format) => {
