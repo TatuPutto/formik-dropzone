@@ -4,12 +4,27 @@ import Alert from './Alert'
 import l10n from '../util/l10n'
 
 class Errors extends PureComponent {
+  translateErrorMessage = (errorMessage, defaultMessage, args) => {
+    if (this.props.t) {
+      return this.props.t(
+        errorMessage,
+        args
+      )
+    }
+
+    return l10n(
+      'error.failedToRemove',
+      defaultMessage,
+      args,
+    )
+  }
+
   renderMultipleErrors = () => {
     const { /* dismiss, */ erroredFiles } = this.props
 
     return (
       <Alert color="danger">
-        {l10n('error.failedToUploadMultipleFiles', 'Seuraavien tiedostojen lähettäminen ei onnistunut')}:
+        {this.translateErrorMessage('error.failedToUploadMultipleFiles', 'Seuraavien tiedostojen lähettäminen ei onnistunut')}
         <ul className="mt-2 mb-1">
           {erroredFiles.map(erroredFile => (
             <li key={erroredFile.name} className="mt-2">
@@ -27,13 +42,14 @@ class Errors extends PureComponent {
 
   renderSingularError = () => {
     const { /* dismiss, */ erroredFiles } = this.props
+    console.log("🚀 ~ file: Errors.js ~ line 45 ~ Errors ~ erroredFiles", erroredFiles)
 
     return (
       <Alert color="danger">
         <div className="font-weight-bold">
           {erroredFiles[0].action === 'REMOVE' ?
             <Fragment>
-              {l10n(
+              {this.translateErrorMessage(
                 'error.failedToRemove',
                 '"{0}" poistaminen epäonnistui.',
                 [erroredFiles[0].name]
@@ -41,7 +57,7 @@ class Errors extends PureComponent {
             </Fragment>
             :
             <Fragment>
-              {l10n(
+              {this.translateErrorMessage(
                 'error.failedToUpload',
                 '"{0}" lähettäminen epäonnistui.',
                 [erroredFiles[0].name]
@@ -74,6 +90,7 @@ class Errors extends PureComponent {
 Errors.propTypes = {
   erroredFiles: array.isRequired,
   dismiss: func,
+  t: func,
 }
 
 export default Errors

@@ -205,7 +205,7 @@ class Dropzone extends Component {
     const oldFiles = this.getCurrentFiles()
     const { validFiles, invalidFiles } = validate(
       files, oldFiles, this.acceptedFileFormats, this.props.maxFileSize)
-
+      console.log('invalidFiles', invalidFiles);
     this.setState(resetErroredFiles)
     this.setState(addErrors(invalidFiles))
 
@@ -328,6 +328,7 @@ class Dropzone extends Component {
   }
 
   handleUploadFailure = (file) => {
+  console.log("🚀 ~ file: Dropzone.js ~ line 331 ~ Dropzone ~ file", file)
     this.setState(resetActiveFile)
     this.setState(addErrors({ ...file, action: 'UPLOAD' }))
   }
@@ -519,7 +520,8 @@ class Dropzone extends Component {
       delayInitialLoad,
       includeFileTypeIcon,
       showPreview,
-      uploadOnDrop
+      uploadOnDrop,
+      t,
     } = this.props
 
     // const files = targetProp ? input.value[targetProp] || [] : input.value
@@ -534,6 +536,7 @@ class Dropzone extends Component {
           <LoadingFiles />
           : showFileSelection ?
             <FileSelection
+              components={components}
               openFileDialog={this.openFileDialog}
               disabled={disabled}
             />
@@ -609,7 +612,10 @@ class Dropzone extends Component {
         </ReactDropzone>
         {this.renderFileRestrictions()}
         {this.state.erroredFiles.length > 0 &&
-          <Errors erroredFiles={this.state.erroredFiles} />
+          <Errors
+            erroredFiles={this.state.erroredFiles}
+            t={this.props.t}
+          />
         }
       </div>
     )
@@ -664,6 +670,7 @@ Dropzone.propTypes = {
   showPreview: bool,
   targetProp: string,
   uploadOnDrop: bool,
+  t: func,
   // style: object,
 }
 
