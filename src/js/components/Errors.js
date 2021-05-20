@@ -24,13 +24,16 @@ class Errors extends PureComponent {
 
     return (
       <Alert color="danger">
-        {this.translateErrorMessage('error.failedToUploadMultipleFiles', 'Seuraavien tiedostojen lähettäminen ei onnistunut')}
+        {this.translateErrorMessage(
+          'error.failedToUploadMultipleFiles',
+          'Seuraavien tiedostojen lähettäminen ei onnistunut'
+        )}
         <ul className="mt-2 mb-1">
           {erroredFiles.map(erroredFile => (
             <li key={erroredFile.name} className="mt-2">
-              <span className="font-weight-bold">
+              <b>
                 {erroredFile.name}
-              </span>
+              </b>
               <br />
               {erroredFile.error}
             </li>
@@ -46,7 +49,7 @@ class Errors extends PureComponent {
 
     return (
       <Alert color="danger">
-        <div className="font-weight-bold">
+        <b>
           {erroredFiles[0].action === 'REMOVE' ?
             <Fragment>
               {this.translateErrorMessage(
@@ -64,7 +67,7 @@ class Errors extends PureComponent {
               )}
             </Fragment>
           }
-        </div>
+        </b>
         {erroredFiles[0].error}
       </Alert>
     )
@@ -72,7 +75,7 @@ class Errors extends PureComponent {
 
   render() {
     return (
-      <div className="alert alert-danger mt-2">
+      <div className="mt-2">
         {this.props.erroredFiles.length === 1 ?
           <Fragment>
             {this.renderSingularError()}
